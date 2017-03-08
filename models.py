@@ -1,7 +1,6 @@
 import chainer
 import chainer.functions as F
 import chainer.links as L
-import math
 
 class Generator(chainer.Chain):
 
@@ -18,10 +17,7 @@ class Generator(chainer.Chain):
 
 	def __call__(self, z, test=False):
 		h = F.reshape(z, (z.shape[0], -1, 1, 1))
-		#print(h.data)
-		#print(h.debug_print())
 		h = F.relu(self.bn_dc1(self.dc1(h), test=test))
-		#print(h.shape)
 		h = F.relu(self.bn_dc2(self.dc2(h), test=test))
 		h = F.relu(self.bn_dc3(self.dc3(h), test=test))
 		h = F.tanh(self.dc4(h))
@@ -43,7 +39,6 @@ class Discriminator(chainer.Chain):
 		)
 		
 	def __call__(self, x, test=False):
-		#h = F.reshape(x, (x.shape[0], -1, 1, 1))
 		h = F.leaky_relu(self.c0(x))   
 		h = F.leaky_relu(self.bn1(self.c1(h), test=test))
 		h = F.leaky_relu(self.bn2(self.c2(h), test=test))

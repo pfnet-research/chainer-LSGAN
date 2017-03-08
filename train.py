@@ -89,8 +89,8 @@ def training_step(args, train_iter, test_iter, noise_iter, opt_generator, opt_di
 def parse_args():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--device_id', '-g', type=int, default=-1)
-	parser.add_argument('--num_epochs', type=int, default=100)
-	parser.add_argument('--batchsize', type=int, default=64)
+	parser.add_argument('--num_epochs', '-n', type=int, default=100)
+	parser.add_argument('--batchsize', '-b', type=int, default=64)
 	parser.add_argument('--num_z', '-z', type=int, default=1024)
 	parser.add_argument('--learning_rate', '-lr', type=float, default=0.001)
 	parser.add_argument('--output', '-o', type=str, default="output")
