@@ -3,7 +3,7 @@ An implementation of the [Least Squares Generative Adversarial Network](https://
 
 ## CIFAR10 & MNIST for 100 epochs
 <p align="center">
-  <img src="images/CIFAR10_epoch100.png" height="512" width="512" alt="CIFAR10"/> <img src="images/MNIST_epoch100.png" height="512" width="512" alt="MNIST"/>
+  <img src="images/CIFAR10_epoch100.png" height="480" width="480" alt="CIFAR10"/> <img src="images/MNIST_epoch100.png" height="480" width="480" alt="MNIST"/>
 </p>
 
 ## Usage
