@@ -2,7 +2,9 @@
 An implementation of the [Least Squares Generative Adversarial Network](https://arxiv.org/abs/1611.04076) architecture using the [Chainer framework](http://chainer.org/). 
 
 ## CIFAR10 & MNIST for 100 epochs
-![CIFAR10](images/CIFAR10_epoch100.png) ![MNIST](images/MNIST_epoch100.png)
+<p align="center">
+  <img src="images/CIFAR10_epoch100.png" alt="CIFAR10"/> <img src="images/MNIST_epoch100.png" alt="MNIST"/>
+</p>
 
 ## Usage
 Trains on the MNIST dataset, and will generate an image of a sample batch from the network after each epoch. Run the following:
