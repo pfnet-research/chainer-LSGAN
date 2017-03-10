@@ -4,6 +4,9 @@ import os
 import argparse
 import math
 
+import matplotlib
+matplotlib.use('Agg')
+
 from matplotlib import pyplot as plt
 import numpy as np
 
@@ -11,7 +14,7 @@ import chainer
 from chainer import cuda, Variable
 import chainer.functions as F
 
-from models import Discriminator, Generator
+from models import Discriminator, GeneratorMNIST, GeneratorCIFAR
 from iterators import RandomNoiseIterator, GaussianNoiseGenerator, UniformNoiseGenerator
 
 def get_batch(iter, device_id):
@@ -61,20 +64,21 @@ def print_sample(name, noise_samples, opt_generator):
 
 def training_step(args, train_iter, test_iter, noise_iter, opt_generator, opt_discriminator):
 
-	noise_samples = get_batch(noise_iter, args.device_id)
+	for _ in range(1):
+		noise_samples = get_batch(noise_iter, args.device_id)
 
-	# generate an image
-	generated = opt_generator.target(noise_samples)
+		# generate an image
+		generated = opt_generator.target(noise_samples)
 
-	# get a batch of the dataset
-	train_samples = get_batch(train_iter, args.device_id)
+		# get a batch of the dataset
+		train_samples = get_batch(train_iter, args.device_id)
 
-	# update the discriminator
-	Dreal = opt_discriminator.target(train_samples)
-	Dgen = opt_discriminator.target(generated)
+		# update the discriminator
+		Dreal = opt_discriminator.target(train_samples)
+		Dgen = opt_discriminator.target(generated)
 
-	Dloss = 0.5 * (F.sum((Dreal - 1.0)**2) + F.sum(Dgen**2)) / args.batchsize
-	update_model(opt_discriminator, Dloss)
+		Dloss = 0.5 * (F.sum((Dreal - 1.0)**2) + F.sum(Dgen**2)) / args.batchsize
+		update_model(opt_discriminator, Dloss)
 
 	# update the generator
 	noise_samples = get_batch(noise_iter, args.device_id)
@@ -94,6 +98,7 @@ def parse_args():
 	parser.add_argument('--num_z', '-z', type=int, default=1024)
 	parser.add_argument('--learning_rate', '-lr', type=float, default=0.001)
 	parser.add_argument('--output', '-o', type=str, default="output")
+	parser.add_argument('--mnist', '-m', action="store_true")
 	return parser.parse_args()
 
 
@@ -104,8 +109,12 @@ def main(args):
 		chainer.cuda.get_device(args.device_id).use()
 
 	# Load dataset (we will only use the training set)
-	train, test = chainer.datasets.get_mnist(withlabel=False, scale=2, ndim=3)
-	#train, test = chainer.datasets.get_cifar10(withlabel=False, scale=2, ndim=3)
+	if args.mnist:
+		train, test = chainer.datasets.get_mnist(withlabel=False, scale=2, ndim=3)
+		generator = GeneratorMNIST()
+	else:
+		train, test = chainer.datasets.get_cifar10(withlabel=False, scale=2, ndim=3)
+		generator = GeneratorCIFAR()
 
 	# subtracting 1, after scaling to 2 (done above) will make all pixels in the range [-1,1]
 	train -= 1.0
@@ -120,7 +129,7 @@ def main(args):
 	opt_generator = chainer.optimizers.RMSprop(lr=args.learning_rate)
 	opt_discriminator = chainer.optimizers.RMSprop(lr=args.learning_rate)
 
-	opt_generator.setup(Generator())
+	opt_generator.setup(generator)
 	opt_discriminator.setup(Discriminator())
 
 	# make a random noise iterator (uniform noise between -1 and 1)
@@ -132,8 +141,8 @@ def main(args):
 		opt_discriminator.target.to_gpu()
 
 	# make the output folder
-    if not os.path.exists(args.output):
-        os.makedirs(args.output, exist_ok=True)
+	if not os.path.exists(args.output):
+		os.makedirs(args.output, exist_ok=True)
 
 	print("Starting training loop...")
 	
