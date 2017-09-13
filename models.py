@@ -16,11 +16,11 @@ class GeneratorCIFAR(chainer.Chain):
             bn_dc3=L.BatchNormalization(64)
         )
 
-    def __call__(self, z, test=False):
+    def __call__(self, z):
         h = F.reshape(z, (z.shape[0], -1, 1, 1))
-        h = F.relu(self.bn_dc1(self.dc1(h), test=test))
-        h = F.relu(self.bn_dc2(self.dc2(h), test=test))
-        h = F.relu(self.bn_dc3(self.dc3(h), test=test))
+        h = F.relu(self.bn_dc1(self.dc1(h)))
+        h = F.relu(self.bn_dc2(self.dc2(h)))
+        h = F.relu(self.bn_dc3(self.dc3(h)))
         h = F.tanh(self.dc4(h))
         return h
 
@@ -38,11 +38,11 @@ class GeneratorMNIST(chainer.Chain):
             bn_dc3=L.BatchNormalization(64)
         )
 
-    def __call__(self, z, test=False):
+    def __call__(self, z):
         h = F.reshape(z, (z.shape[0], -1, 1, 1))
-        h = F.relu(self.bn_dc1(self.dc1(h), test=test))
-        h = F.relu(self.bn_dc2(self.dc2(h), test=test))
-        h = F.relu(self.bn_dc3(self.dc3(h), test=test))
+        h = F.relu(self.bn_dc1(self.dc1(h)))
+        h = F.relu(self.bn_dc2(self.dc2(h)))
+        h = F.relu(self.bn_dc3(self.dc3(h)))
         h = F.tanh(self.dc4(h))
         return h
 
@@ -61,10 +61,10 @@ class Discriminator(chainer.Chain):
             bn3 = L.BatchNormalization(512)
         )
         
-    def __call__(self, x, test=False):
+    def __call__(self, x):
         h = F.leaky_relu(self.c0(x))   
-        h = F.leaky_relu(self.bn1(self.c1(h), test=test))
-        h = F.leaky_relu(self.bn2(self.c2(h), test=test))
-        h = F.leaky_relu(self.bn3(self.c3(h), test=test))
+        h = F.leaky_relu(self.bn1(self.c1(h)))
+        h = F.leaky_relu(self.bn2(self.c2(h)))
+        h = F.leaky_relu(self.bn3(self.c3(h)))
         l = self.l4l(h)
         return l
