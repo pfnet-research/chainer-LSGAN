@@ -62,7 +62,7 @@ def print_sample(name, noise_samples, opt_generator):
     save_ims(name, generated.data)
     print("    Saved image to {}".format(name))
 
-def training_step(args, train_iter, test_iter, noise_iter, opt_generator, opt_discriminator):
+def training_step(args, train_iter, noise_iter, opt_generator, opt_discriminator):
 
     noise_samples = get_batch(noise_iter, args.device_id)
 
@@ -122,7 +122,6 @@ def main(args):
 
     # make data iterators
     train_iter = chainer.iterators.SerialIterator(train, args.batchsize)
-    test_iter = chainer.iterators.SerialIterator(test, args.batchsize, repeat=False, shuffle=False)
 
     # build optimizers and models
     opt_generator = chainer.optimizers.RMSprop(lr=args.learning_rate)
@@ -146,7 +145,7 @@ def main(args):
     print("Starting training loop...")
     
     while train_iter.epoch < args.num_epochs:
-        training_step(args, train_iter, test_iter, noise_iter, opt_generator, opt_discriminator)
+        training_step(args, train_iter, noise_iter, opt_generator, opt_discriminator)
     
     print("Finished training.")
 
